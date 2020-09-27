@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using crawlerLib;
 using crawlerLib.DAO;
 using crawlerLib.models;
 using HtmlAgilityPack;
@@ -45,7 +44,8 @@ namespace crawler
 
             for (int i = 0; i < 15; i++)
             {
-                juncao = "https://saude.gov.br/noticias/?start=" + i * 10;
+                
+                juncao = "https://www.gov.br/pt-br/noticias/ultimas-noticias?b_start:int=" + i * 10;
                 string html = "";
                 Task taskB = Task.Run(async () =>
                 html = await httpClient.GetStringAsync(juncao));
@@ -61,21 +61,21 @@ namespace crawler
                 HtmlDoc.LoadHtml(html);
                 Console.WriteLine("carregando html no htmldoc");
 
-                var divs = HtmlDoc.DocumentNode.Descendants("div").
+                var divs = HtmlDoc.DocumentNode.Descendants("article").
                Where(node =>
-               node.GetAttributeValue("class", "").Equals("tileItem")).ToList();
+               node.GetAttributeValue("class", "").Equals("tileItem visualIEFloatFix tile-collective-nitf-content")).ToList();
 
                 foreach (var div in divs)
                 {
                     var titulo = div?.Descendants("h2").First().Descendants("a").First().InnerText;
-                    var descricao = div?.Descendants("p").FirstOrDefault().InnerText;
+                    var descricao = div?.Descendants("p").FirstOrDefault().InnerText.Trim();
                     var link = div?.Descendants("h2").First().Descendants("a").First().GetAttributeValue("href", string.Empty);
 
                     Noticia noticia = new Noticia
                     {
                         Titulo = titulo,
                         Descricao = descricao,
-                        Link = "https://saude.gov.br" + link
+                        Link = link
                     };
                     try
                     {
