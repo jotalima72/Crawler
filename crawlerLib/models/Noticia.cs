@@ -13,7 +13,7 @@ namespace crawlerLib.models
 
         public override string ToString()
         {
-            return "Titulo - " + Titulo + "\nLink - " + Link +"\n\n";
+            return "Titulo - " + Titulo + "\nDescrição" + Descricao + "\nLink - " + Link +"\n\n";
         }
    
     }
